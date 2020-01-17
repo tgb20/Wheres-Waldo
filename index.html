@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Where's Waldo?</title>
+    <script async src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
+</head>
+
+<body>
+    <button type="button" onclick="loadFishing()">Load Fishing</button>
+    <button type="button" onclick="loadBalls()">Load Balls</button>
+    <button id="findWaldoButton" type="button" hidden onclick="findWaldo()">Find Waldo</button>
+    <img id="imageSrc" src="waldo_balls.jpg" alt="No Image" />
+    <img id="waldoSrc" src="waldo.jpg" alt="No Image" />
+    <canvas id="imageCanvas"></canvas>
+    <script type="text/javascript">
+
+        let imgElement = document.getElementById('imageSrc');
+        let waldoElement = document.getElementById('waldoSrc');
+        let canvasElement = document.getElementById('imageCanvas');
+
+        function loadFishing() {
+            imgElement.src = "waldo_fishing.jpg";
+            imgElement.hidden = false;
+            canvasElement.hidden = true;
+        }
+
+        function loadBalls() {
+            imgElement.src = "waldo_balls.jpg";
+            imgElement.hidden = false;
+            canvasElement.hidden = true;
+        }
+
+        function findWaldo() {
+            let scene = cv.imread(imgElement);
+            let waldo = cv.imread(waldoElement);
+            cv.imshow('imageCanvas', scene);
+            imgElement.hidden = true;
+            canvasElement.hidden = false;
+            let dst = new cv.Mat();
+            let mask = new cv.Mat();
+            cv.matchTemplate(scene, waldo, dst, cv.TM_CCOEFF, mask);
+            let result = cv.minMaxLoc(dst, mask);
+            let maxPoint = result.maxLoc;
+            let color = new cv.Scalar(0, 0, 255, 255);
+            let point = new cv.Point(maxPoint.x + waldo.cols, maxPoint.y + waldo.rows);
+            cv.rectangle(scene, maxPoint, point, color, 2, cv.LINE_8, 0);
+            cv.imshow('imageCanvas', scene);
+            scene.delete(); dst.delete(); mask.delete();
+        }
+
+        function onOpenCvReady() {
+            let findWaldoButton = document.getElementById("findWaldoButton");
+            findWaldoButton.hidden = false;
+        }
+
+    </script>
+
+</body>
+
+</html>
