@@ -2,10 +2,10 @@ import cv2
 from matplotlib import pyplot as plt
 
 # Looking for this image
-template = cv2.imread('waldo.jpg',0)
+template = cv2.imread('female_waldo.jpg',0)
 
 # in this image 
-img_rgb = cv2.imread('waldo_feast.jpg')
+img_rgb = cv2.imread('waldo_town.jpg')
 
 # Convert it to grayscale
 img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
